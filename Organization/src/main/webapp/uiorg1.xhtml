@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<h:outputStylesheet name="jquery-ui-1.10.3.min.css" library="css" />
+	<h:outputStylesheet name="ui.css" library="css" />
+	<h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+	<h:outputScript library="primefaces" name="jquery/jquery-plugins.js" target="head" />
+	<h:outputScript library="js" name="ui.js" />
+	<title><ui:insert name="title">Organization</ui:insert></title>
+</h:head>
+<h:body>
+
+	<h:form id="uiForm" style="width: 100%;float: left;">
+		<p:commandButton value="Load UI" action="#{uiBean.loadUi}" process="@this" oncomplete="handleJSON(xhr, status, args)" update="uiForm" />
+		<p:remoteCommand name="clickedResourceCmd" action="#{uiBean.clickedResource}" process="@this" oncomplete="showSelectedUi()"/>
+		
+		<p:outputPanel rendered="#{uiBean.renderPanel}"
+			style="margin: 0 auto;width: 55%;">
+			<div class="org_logo">
+				<img src="../resources/images/org.jpg" />
+			</div>
+			<div class="org" id="orgUiDiv">
+				<ui:repeat var="location" value="#{uiBean.organisation.locations}">
+					<div class="location" onclick="clickedResource('#{location.locId}','location')">
+						<div class="location_logo">
+							<img src="../resources/images/location.jpg" />
+						</div>
+						<div>
+							<ui:repeat var="zone" value="#{location.zones}">
+								<div class="zone" onclick="clickedResource('#{zone.zoneName}','zone')">
+									<div class="branch_logo">
+										<img src="../resources/images/zone.jpg" />
+									</div>
+									<ui:repeat var="branch" value="#{zone.branches}">
+										<div class="branch" onclick="clickedResource('#{branch.branchId}','branch')">
+											<div class="branch_logo">
+												<img src="../resources/images/branch.jpg" />
+											</div>
+											<ui:repeat var="employee" value="#{branch.employees}">
+												<div class="employee">
+													<img src="../resources/images/employee.png"
+														class="employee_logo" />
+													<div class="employee_content">#{employee.empId}</div>
+												</div>
+											</ui:repeat>
+											<div>
+												<div class="text-center" style="margin: 0;">#{branch.branchId}</div>
+											</div>
+										</div>
+									</ui:repeat>
+									<div class="text-center" style="margin: 0;">#{zone.zoneName}</div>
+								</div>
+							</ui:repeat>
+						</div>
+						<div class="text-center location_content">#{location.locId}</div>
+					</div>
+				</ui:repeat>
+				<div class="text-center" style="margin: 0;">#{uiBean.organisation.orgName}</div>
+			</div>
+		</p:outputPanel>
+
+		<p:outputPanel id="locPanel"
+			style="margin: 0 auto;width: 55%;">
+			<div class="locModal">
+			<div class="loc-modal-content">
+				<span class="close">&times;</span>
+					<div class="location">
+						<div class="location_logo">
+							<img src="../resources/images/location.jpg" />
+						</div>
+						<div>
+							<ui:repeat var="zone" value="#{uiBean.location.zones}">
+								<div class="zone">
+									<div class="branch_logo">
+										<img src="../resources/images/zone.jpg" />
+									</div>
+									<ui:repeat var="branch" value="#{zone.branches}">
+										<div class="branch">
+											<div class="branch_logo">
+												<img src="../resources/images/branch.jpg" />
+											</div>
+											<ui:repeat var="employee" value="#{branch.employees}">
+												<div class="employee">
+													<img src="../resources/images/employee.png"
+														class="employee_logo" />
+													<div class="employee_content">#{employee.empId}</div>
+												</div>
+											</ui:repeat>
+											<div>
+												<div class="text-center" style="margin: 0;">#{branch.branchId}</div>
+											</div>
+										</div>
+									</ui:repeat>
+									<div class="text-center" style="margin: 0;">#{zone.zoneName}</div>
+								</div>
+							</ui:repeat>
+						</div>
+						<div class="text-center location_content">#{uiBean.location.locId}</div>
+					</div>
+					</div>
+		</div>
+		</p:outputPanel>
+
+		<p:outputPanel id="zonePanel" style="margin: 0 auto;width: 55%;">
+			<div class="zoneModal">
+				<div class="zone-modal-content">
+					<span class="close">&times;</span>
+					<div class="zone">
+						<div class="branch_logo">
+							<img src="../resources/images/zone.jpg" />
+						</div>
+						<ui:repeat var="branch" value="#{uiBean.zone.branches}">
+							<div class="branch">
+								<div class="branch_logo">
+									<img src="../resources/images/branch.jpg" />
+								</div>
+								<ui:repeat var="employee" value="#{branch.employees}">
+									<div class="employee">
+										<img src="../resources/images/employee.png"
+											class="employee_logo" />
+										<div class="employee_content">#{employee.empId}</div>
+									</div>
+								</ui:repeat>
+								<div>
+									<div class="text-center" style="margin: 0;">#{branch.branchId}</div>
+								</div>
+							</div>
+						</ui:repeat>
+						<div class="text-center" style="margin: 0;">#{uiBean.zone.zoneName}</div>
+					</div>
+				</div>
+			</div>
+		</p:outputPanel>
+
+		<p:outputPanel id="branchPanel" style="margin: 0 auto;width: 55%;">
+			<div class="branchModal">
+				<div class="branch-modal-content">
+					<span class="close">&times;</span>
+					<div class="branch">
+						<div class="branch_logo">
+							<img src="../resources/images/branch.jpg" />
+						</div>
+						<ui:repeat var="employee" value="#{uiBean.branch.employees}">
+							<div class="employee">
+								<img src="../resources/images/employee.png"
+									class="employee_logo" />
+								<div class="employee_content">#{employee.empId}</div>
+							</div>
+						</ui:repeat>
+						<div>
+							<div class="text-center" style="margin: 0;">#{uiBean.branch.branchId}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</p:outputPanel>
+
+	</h:form>
+
+	
+</h:body>
+</html>
